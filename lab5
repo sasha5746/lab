@@ -1,0 +1,98 @@
+import java.util.*;
+
+class Human {
+    String surname;
+    String name;
+    int birthYear;
+    int birthMonth;
+
+    public Human(String surname, String name, int birthYear, int birthMonth) {
+        this.surname = surname;
+        this.name = name;
+        this.birthYear = birthYear;
+        this.birthMonth = birthMonth;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "Фамилия: %s, Имя: %s, Год рождения: %d, Месяц рождения: %d",
+                surname, name, birthYear, birthMonth
+        );
+    }
+}
+
+public class HumanProcessor {
+    public static void main(String[] args) {
+        Human[] humans = {
+                new Human("Ivanov", "Ivan", 1990, 5),
+                new Human("Petrov", "Petr", 1985, 3),
+                new Human("Sidorov", "Alex", 1978, 12),
+                new Human("Smith", "John", 1995, 7)
+        };
+
+        // Самый старый человек
+        Human oldest = findOldest(humans);
+        System.out.println("Самый старый: " + oldest);
+
+        // Средний возраст и люди старше среднего
+        double averageAge = calculateAverageAge(humans);
+        System.out.println("\nСредний возраст: " + averageAge);
+        System.out.println("Люди старше среднего:");
+        for (Human h : humans) {
+            if (2024 - h.birthYear > averageAge) {
+                System.out.println(h);
+            }
+        }
+
+        // Сортировка по фамилии (обратный порядок)
+        Arrays.sort(humans, (h1, h2) -> h2.surname.compareTo(h1.surname));
+        System.out.println("\nПосле сортировки:");
+        for (Human h : humans) {
+            System.out.println(h);
+        }
+
+        // Поиск и редактирование
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("\nВведите фамилию для поиска: ");
+        String searchSurname = scanner.nextLine();
+
+        Human found = findHuman(humans, searchSurname);
+        if (found != null) {
+            System.out.println("Найден: " + found);
+            System.out.print("Введите новое имя: ");
+            found.name = scanner.nextLine();
+            System.out.println("После редактирования: " + found);
+        } else {
+            System.out.println("Человек не найден");
+        }
+    }
+
+    static Human findOldest(Human[] humans) {
+        Human oldest = humans[0];
+        for (Human h : humans) {
+            if (h.birthYear < oldest.birthYear ||
+                    (h.birthYear == oldest.birthYear && h.birthMonth < oldest.birthMonth)) {
+                oldest = h;
+            }
+        }
+        return oldest;
+    }
+
+    static double calculateAverageAge(Human[] humans) {
+        int total = 0;
+        for (Human h : humans) {
+            total += 2024 - h.birthYear;
+        }
+        return (double) total / humans.length;
+    }
+
+    static Human findHuman(Human[] humans, String surname) {
+        for (Human h : humans) {
+            if (h.surname.equalsIgnoreCase(surname)) {
+                return h;
+            }
+        }
+        return null;
+    }
+}
